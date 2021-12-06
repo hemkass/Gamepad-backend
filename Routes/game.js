@@ -19,7 +19,7 @@ router.get("/games", async (req, res) => {
   if (req.query.size) {
     size = req.query.size;
   }
-  let platform = 30;
+  let platform = "1,2,3,4";
   if (req.query.parent_platforms) {
     platform = req.query.parent_platforms;
   }
@@ -37,7 +37,7 @@ router.get("/games", async (req, res) => {
     //console.log(response.data);
     res.json(response.data);
   } catch (error) {
-    //console.log(error.message);
+    console.log(error.message);
   }
 });
 
