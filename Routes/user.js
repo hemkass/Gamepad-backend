@@ -106,20 +106,19 @@ router.post("/review/add", auth, async (req, res) => {
 
 /* Afficher les reviews par date les plus récentes */
 
-router.get("/reviews", async (req, res) => {
+router.get("/reviews/:id", async (req, res) => {
   try {
     let page = 1;
     if (req.query.page) {
       page = Number(req.query.page);
     }
 
-    // Par défaut on fixe la limite à 10
     let limit = 9;
     if (req.query.limit) {
       limit = Number(req.query.limit);
     }
 
-    const reviews = await Review.find()
+    const reviews = await Review.findOne({ id_game: req.params.id })
       .populate({
         path: "owner",
         select: "username email",
