@@ -14,7 +14,9 @@ router.post("/signup", async (req, res) => {
     if (user) {
       res.status(428).json({ message: "This email already has an account." });
     } else {
+      console.log("Etape1");
       if (req.fields.email && req.fields.password && req.fields.username) {
+        console.log("Etape2");
         const token = uid2(64);
         const salt = uid2(64);
         const hash = SHA256(req.fields.password + salt).toString(encBase64);
@@ -25,7 +27,7 @@ router.post("/signup", async (req, res) => {
           salt: salt,
           hash: hash,
         });
-
+        console.log("Etape3");
         await user.save();
         res.json({
           _id: user._id,
