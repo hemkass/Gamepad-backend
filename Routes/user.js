@@ -5,12 +5,16 @@ const SHA256 = require("crypto-js/sha256");
 const encBase64 = require("crypto-js/enc-base64");
 
 const User = require("../Models/User");
+const Review = require("../Models/Review");
+
+const auth = require("../auth");
 
 /* SignUp */
 router.post("/signup", async (req, res) => {
-  console.log("hello");
+  /*  console.log("hello"); */
   try {
     const user = await User.findOne({ email: req.fields.email });
+
     if (user) {
       res.status(428).json({ message: "This email already has an account." });
     } else {
@@ -69,4 +73,63 @@ router.post("/login", async (req, res) => {
     res.json({ message: error.message });
   }
 });
+
+/* Creer une review lorsque l'on est connecté */
+
+router.post("/review/add", auth, async (req, res) => {
+  /*  console.log("hello"); */
+  try {
+    if (req.user) {
+      const review = new Review({
+        id_game: req.fields.id,
+        name: req.fields.name,
+        rating: req.fields.rating,
+        description: req.fields.description,
+        created: req.fields.created,
+        owner: req.user,
+      });
+
+      await review.save();
+      res.json({
+        _id: review._id,
+        rating: review.rating,
+        description: review.description,
+        owner: review.owner,
+      });
+    } else {
+      res.status(428).json({ message: "Veuillez vous connecter" });
+    }
+  } catch (error) {
+    res.json({ message: error.message });
+  }
+});
+
+/* Afficher les reviews par date les plus récentes */
+
+router.get("/reviews", async (req, res) => {
+  try {
+    let page = 1;
+    if (req.query.page) {
+      page = Number(req.query.page);
+    }
+
+    // Par défaut on fixe la limite à 10
+    let limit = 9;
+    if (req.query.limit) {
+      limit = Number(req.query.limit);
+    }
+
+    const reviews = await Review.find()
+      .sort({ created: -1 })
+      .limit(limit)
+      .skip((page - 1) * limit);
+
+    const count = await Review.countDocuments();
+
+    res.json({ count: count, reviews: reviews });
+  } catch (error) {
+    res.json({ error: { message: error.message } });
+  }
+});
+
 module.exports = router;
