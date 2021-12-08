@@ -118,7 +118,7 @@ router.get("/reviews/:id", async (req, res) => {
       limit = Number(req.query.limit);
     }
 
-    const reviews = await Review.findOne({ id_game: req.params.id })
+    const reviews = await Review.find({ id_game: req.params.id })
       .populate({
         path: "owner",
         select: "username email",
