@@ -6,9 +6,16 @@ var cors = require("cors");
 const app = express();
 require("dotenv").config();
 
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
 app.use(formidableMiddleware());
 app.use(cors());
 
+const userRoutes = require("./Routes/user");
+app.use(userRoutes);
 const gameRoutes = require("./Routes/game");
 app.use(gameRoutes);
 

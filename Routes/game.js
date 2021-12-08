@@ -2,6 +2,10 @@ const express = require("express");
 const router = express.Router();
 const axios = require("axios");
 
+router.post("/form", (req, res) => {
+  console.log("hello");
+});
+
 // l'ensemble des jeux
 router.get("/games", async (req, res) => {
   let dates = req.query.dates;
