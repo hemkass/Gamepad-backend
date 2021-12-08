@@ -120,6 +120,10 @@ router.get("/reviews", async (req, res) => {
     }
 
     const reviews = await Review.find()
+      .populate({
+        path: "owner",
+        select: "username email",
+      })
       .sort({ created: -1 })
       .limit(limit)
       .skip((page - 1) * limit);
